@@ -20,7 +20,6 @@ describe('Books', () => {
             chai.request(server)
                 .get('/book')
                 .end((err, res) => {
-                    console.log("res", res)
                     expect(res).to.have.status(200);
                     expect(res.body.books).to.be.a('array');
                     expect(res.body.books.length).to.be.eql(0);
@@ -43,8 +42,8 @@ describe('Books', () => {
                 .post('/book')
                 .send(book)
                 .end((err, res) => {
-                    console.log("res", res)
-                    console.log("err", err)
+                    // console.log("res", res)
+                    // console.log("err", err)
                     expect(res).to.have.status(500);
                     expect(res.body).to.be.a('object');
                     expect(res.body).to.have.property('errors');
