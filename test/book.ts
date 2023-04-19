@@ -15,7 +15,7 @@ describe("Books", () => {
 
   describe("/GET book", () => {
     //Gets all the list of the books
-    it("it should GET all the books", (done) => {
+    it("Should GET all the books", (done) => {
       chai
         .request(server)
         .get("/book")
@@ -37,6 +37,31 @@ describe("Books", () => {
           expect(res).to.have.status(404);
           expect(res.body.books).to.be.undefined;
           done();
+        });
+    });
+
+    //Verify that the API returns the correct response code (200)
+    //when a valid request is sent to retrieve details of a book by its ID.
+    it("Should return the valid response with valid request to retrieve details of a book by its ID", async () => {
+      const book = {
+        title: "Vogue",
+        author: "Fred",
+        year: 1955,
+        pages: 1456,
+      };
+
+      const response = await chai.request(server).post("/book").send(book);
+      //   console.log(response);
+
+      chai
+        .request(server)
+        .get(`/book/${response.body.book["_id"]}`)
+        .end((err, res) => {
+          expect(res.body.book.title).to.equal(book.title);
+          expect(res.body.book.author).to.equal(book.author);
+          expect(res.body.book.year).to.equal(book.year);
+          expect(res.body.book.pages).to.equal(book.pages);
+          expect(res).to.have.status(200);
         });
     });
   });
