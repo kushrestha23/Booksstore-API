@@ -1,13 +1,5 @@
-process.env.NODE_ENV = "test";
+import { Book, server, chai, expect, postBook } from "./utils/utils";
 
-let mongoose = require("mongoose");
-// let Book = require('../models/book');
-import server from "../server";
-import chai, { expect } from "chai";
-import chaiHttp from "chai-http";
-import Book from "../models/book";
-
-chai.use(chaiHttp);
 describe("Books", () => {
   beforeEach(async () => {
     await Book.deleteMany({});
@@ -50,8 +42,7 @@ describe("Books", () => {
         pages: 1456,
       };
 
-      const response = await chai.request(server).post("/book").send(book);
-      //   console.log(response);
+      const response = await postBook(book);
 
       chai
         .request(server)
@@ -68,7 +59,7 @@ describe("Books", () => {
 
   describe("/POST book", () => {
     //Should return the error message but test should be passed.
-    it("it should not POST a book without pages field", (done) => {
+    it("it should not POST a book without pages field", async (done) => {
       let book = {
         title: "The Lord of the Rings",
         author: "J.R.R. Tolkien",
@@ -76,49 +67,36 @@ describe("Books", () => {
         // pages: { type: Number, required: true },
       };
 
-      chai
-        .request(server)
-        .post("/book")
-        .send(book)
-        .end((err, res) => {
-          // console.log("res", res)
-          // console.log("err", err)
-          expect(res).to.have.status(500);
-          expect(res.body).to.be.a("object");
-          expect(res.body).to.have.property("errors");
-          expect(res.body.errors).to.have.property("pages");
-          expect(res.body.errors.pages)
-            .to.have.property("kind")
-            .eql("required");
-          done();
-        });
+      const res = await postBook(book);
+      expect(res).to.have.status(500);
+      expect(res.body).to.be.a("object");
+      expect(res.body).to.have.property("errors");
+      expect(res.body.errors).to.have.property("pages");
+      expect(res.body.errors.pages).to.have.property("kind").eql("required");
+      done();
     });
 
     //Validatiom that all the data is entered properly:
-    it("it should POST a book ", (done) => {
+    it("it should POST a book ", async (done) => {
       let book = {
         title: "Harry Potter 1",
         author: "J.K. Rowling 1",
         year: 1995,
         pages: 223,
       };
-
-      chai
-        .request(server)
-        .post("/book")
-        .send(book)
-        .end((err, res) => {
-          expect(res).to.have.status(201);
-          expect(res.body).to.be.a("object");
-          expect(res.body)
-            .to.have.property("Message")
-            .eql("Book successfully added!");
-          expect(res.body.book).to.have.property("title");
-          expect(res.body.book).to.have.property("author");
-          expect(res.body.book).to.have.property("year");
-          expect(res.body.book).to.have.property("pages");
-          done();
-        });
+      const res = await postBook(book);
+      expect(res).to.have.status(201);
+      expect(res.body).to.be.a("object");
+      expect(res.body)
+        .to.have.property("Message")
+        .eql("Book successfully added!");
+      expect(res.body.book).to.have.property("title");
+      expect(res.body.book).to.have.property("author");
+      expect(res.body.book).to.have.property("year");
+      expect(res.body.book).to.have.property("pages");
+      done();
     });
   });
 });
+
+export default chai;
