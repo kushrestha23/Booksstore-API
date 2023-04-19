@@ -1,13 +1,16 @@
 // create env for development, staging and production and test
 const config = {
     development: {
-        "DBHost": "mongodb://localhost:27017/book"
+        "DBHost": "mongodb://localhost:27017/book",
+        "PORT": 9000
     },
     test: {
-        "DBHost": "mongodb://localhost:27017/test-book"
+        "DBHost": "mongodb://localhost:27017/test-book",
+        "PORT": 8000
     },
     default: {
-        "DBHost": "mongodb://localhost:27017/book"
+        "DBHost": "mongodb://localhost:27017/book",
+        "PORT": 9000
     }
 }
 

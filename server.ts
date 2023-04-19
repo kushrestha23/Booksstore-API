@@ -7,7 +7,7 @@ import config from './config/config'; //we load the db location from the JSON fi
 
 //db options
 const app = express();
-const port = 9000;
+const port = config.PORT;
 const options = {};
 
 console.log("config.DBHost", config.DBHost);
